@@ -35,6 +35,7 @@ class ViewController: UIViewController {
         let location = gesture.location(in: view)
         print("Touch coordinates: \(location.x), \(location.y)")
         
+        // 画圆
         let circlePath = UIBezierPath(arcCenter: location, radius: 25, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
         
         let circleLayer = CAShapeLayer()
@@ -44,6 +45,8 @@ class ViewController: UIViewController {
         circleLayer.lineWidth = 2.0
         
         view.layer.addSublayer(circleLayer)
+        
+        // 消圆
         
         // Optional: Animate the disappearance of the circle
         
@@ -72,7 +75,7 @@ class ViewController: UIViewController {
         
     }
     
-    //获取单击位置展现
+    // 获取单击位置展现
     
     //    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     //        let firstTouch:UITouch = touches.first!
