@@ -38,40 +38,40 @@ class ViewController: UIViewController {
     }
     
     
-    // 开启屏幕双击检测
+    // 开启屏幕单击检测
     @IBAction func startAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        // 检测双击
-        tapGesture.numberOfTapsRequired = 2
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 1
         view.addGestureRecognizer(tapGesture)
         
     }
     
-    // 关闭屏幕双击检测
+    // 关闭屏幕单击检测
     @IBAction func closeAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelTap))
-        // 检测双击
-        tapGesture.numberOfTapsRequired = 2
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 1
         view.addGestureRecognizer(tapGesture)
         
     }
     
-    // 删除圆
+    // 删除所有图层
     @IBAction func delAllAct(_ sender: Any) {
         deleteAllCircles()
     }
     
-    // 删除最后一个圆
+    // 删除最后一个图层
     @IBAction func cancelAct(_ sender: Any) {
         deleteCircles()
     }
     
-    
+    // 单击点按删除
     @IBAction func touchDelAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(deleteAnyCircles(_:)))
-        // 检测双击
-        tapGesture.numberOfTapsRequired = 2
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 1
         view.addGestureRecognizer(tapGesture)
     }
     
@@ -81,33 +81,37 @@ class ViewController: UIViewController {
         let location = gesture.location(in: picImage)
         print("Touch coordinates: \(location.x), \(location.y)")
         
-        // 创建圆的路径
-        let circlePath = UIBezierPath(arcCenter: location, radius: 25, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
-        // 创建圆的图层
-        let circleLayer = CAShapeLayer()
-        circleLayer.path = circlePath.cgPath
-        circleLayer.strokeColor = UIColor.red.cgColor
-        circleLayer.fillColor = UIColor.clear.cgColor
-        circleLayer.lineWidth = 2.0
+//        // 创建圆的路径
+//        let circlePath = UIBezierPath(arcCenter: location, radius: 25, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
+//        // 创建圆的图层
+//        let circleLayer = CAShapeLayer()
+//        circleLayer.path = circlePath.cgPath
+//        circleLayer.strokeColor = UIColor.red.cgColor
+//        circleLayer.fillColor = UIColor.clear.cgColor
+//        circleLayer.lineWidth = 2.0
         
-        picImage.layer.addSublayer(circleLayer)
+        // 创建x号路径
+        let crossPath = createCrossPath(at: location)
+        // 创建 CAShapeLayer 显示路径
+        let crossrLayer = CAShapeLayer()
+        crossrLayer.path = crossPath.cgPath
+        crossrLayer.strokeColor = UIColor.red.cgColor
+        crossrLayer.fillColor = UIColor.clear.cgColor
+        crossrLayer.lineWidth = 2.0
         
+//        // 创建星号路径
+//        let starPath = createStarPath(at: location)
+//        // 创建 CAShapeLayer 显示路径
+//        let starLayer = CAShapeLayer()
+//        starLayer.path = starPath.cgPath
+//        starLayer.fillColor = UIColor.red.cgColor
+//        starLayer.lineWidth = 2.0
+        
+        
+        picImage.layer.addSublayer(crossrLayer)
         // 存储图层信息
-        circles.append(circleLayer)
-        
-        // 消圆
-        // Optional: Animate the disappearance of the circle
-        //           CATransaction.begin()
-        //           CATransaction.setCompletionBlock {
-        //               circleLayer.removeFromSuperlayer()
-        //           }
-        //           let animation = CABasicAnimation(keyPath: "opacity")
-        //           animation.fromValue = 1.0
-        //           animation.toValue = 0.0
-        //           animation.duration = 0.5
-        //           circleLayer.add(animation, forKey: "opacityAnimation")
-        //           CATransaction.commit()
-        
+        circles.append(crossrLayer)
+                
         // 获取双击位置展现
         if gesture.state == .ended {
             let location = gesture.location(in: picImage)
@@ -155,18 +159,47 @@ class ViewController: UIViewController {
         }
         
         
-        // 获取单击位置展现
-        //    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //        let firstTouch:UITouch = touches.first!
-        //        let firstPoint = firstTouch.location(in: self.view)
-        //
-        //        let x:CGFloat = firstPoint.x
-        //        let y:CGFloat = firstPoint.y
-        //
-        //        self.textFieldXPoint.text = "\(x)"
-        //        self.textFieldYPoint.text = "\(y)"
-        //    }
-        
     }
     
+    
+    // 画星路径函数
+    func createStarPath(at center: CGPoint) -> UIBezierPath {
+        let starPath = UIBezierPath()
+
+        let numberOfPoints = 5
+        let starRadius: CGFloat = 10.0
+        let angleIncrement = CGFloat.pi * 4.0 / CGFloat(numberOfPoints * 2)
+
+        for i in 0..<numberOfPoints * 2 {
+            let radius = i % 2 == 0 ? starRadius : starRadius / 2.0
+            let angle = CGFloat(i) * angleIncrement
+            let x = center.x + radius * sin(angle)
+            let y = center.y + radius * cos(angle)
+
+            if i == 0 {
+                starPath.move(to: CGPoint(x: x, y: y))
+            } else {
+                starPath.addLine(to: CGPoint(x: x, y: y))
+            }
+        }
+        starPath.close()
+        return starPath
+    }
+    
+    // 画×路径函数
+    func createCrossPath(at center: CGPoint) -> UIBezierPath {
+        let crossPath = UIBezierPath()
+        // 定义叉号的大小
+        let crossSize: CGFloat = 20.0
+        // 移动到左上角
+        crossPath.move(to: CGPoint(x: center.x - crossSize/2, y: center.y - crossSize/2))
+        // 添加斜线
+        crossPath.addLine(to: CGPoint(x: center.x + crossSize/2, y: center.y + crossSize/2))
+        // 移动到左下角
+        crossPath.move(to: CGPoint(x: center.x - crossSize/2, y: center.y + crossSize/2))
+        // 添加斜线
+        crossPath.addLine(to: CGPoint(x: center.x + crossSize/2, y: center.y - crossSize/2))
+        crossPath.close()
+        return crossPath
+    }
 }
