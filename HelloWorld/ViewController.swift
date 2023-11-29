@@ -25,16 +25,6 @@ class ViewController: UIViewController {
     // function
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        //        print("Hello, bug")
-        
-        //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        //
-        //        // 检测双击
-        //        tapGesture.numberOfTapsRequired = 2
-        //        view.addGestureRecognizer(tapGesture)
-        
-        //        showLocation.text = tapGesture
     }
     
     
