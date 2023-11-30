@@ -28,20 +28,20 @@ class ViewController: UIViewController {
     }
     
     
-    // 开启屏幕单击检测
+    // 开启屏幕双击检测
     @IBAction func startAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
         
     }
     
-    // 关闭屏幕单击检测
+    // 关闭屏幕双击检测
     @IBAction func closeAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelTap))
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
         
@@ -57,10 +57,10 @@ class ViewController: UIViewController {
         deleteCircles()
     }
     
-    // 单击点按删除
+    // 双击点按删除
     @IBAction func touchDelAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(deleteAnyCircles(_:)))
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
     }
@@ -161,7 +161,7 @@ class ViewController: UIViewController {
             textFieldYPoint.text = "y:\(y)"
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelTap))
-            // 检测单击
+            // 检测双击
             tapGesture.numberOfTapsRequired = 2
             picImage.addGestureRecognizer(tapGesture)
         }
@@ -281,7 +281,7 @@ class ViewController: UIViewController {
         }
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
     }
@@ -296,7 +296,7 @@ class ViewController: UIViewController {
         }
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
     }
@@ -311,7 +311,7 @@ class ViewController: UIViewController {
         }
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
     }
@@ -326,7 +326,7 @@ class ViewController: UIViewController {
         }
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
-        // 检测单击
+        // 检测双击
         tapGesture.numberOfTapsRequired = 2
         picImage.addGestureRecognizer(tapGesture)
     }
