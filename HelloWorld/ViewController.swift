@@ -33,8 +33,8 @@ class ViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         
         // 检测单击
-        tapGesture.numberOfTapsRequired = 1
-        view.addGestureRecognizer(tapGesture)
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
         
     }
     
@@ -42,8 +42,8 @@ class ViewController: UIViewController {
     @IBAction func closeAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelTap))
         // 检测单击
-        tapGesture.numberOfTapsRequired = 1
-        view.addGestureRecognizer(tapGesture)
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
         
     }
     
@@ -61,55 +61,109 @@ class ViewController: UIViewController {
     @IBAction func touchDelAct(_ sender: Any) {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(deleteAnyCircles(_:)))
         // 检测单击
-        tapGesture.numberOfTapsRequired = 1
-        view.addGestureRecognizer(tapGesture)
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
     }
     
     
     
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
-        let location = gesture.location(in: picImage)
-        print("Touch coordinates: \(location.x), \(location.y)")
-        
-//        // 创建圆的路径
-//        let circlePath = UIBezierPath(arcCenter: location, radius: 25, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
-//        // 创建圆的图层
-//        let circleLayer = CAShapeLayer()
-//        circleLayer.path = circlePath.cgPath
-//        circleLayer.strokeColor = UIColor.red.cgColor
-//        circleLayer.fillColor = UIColor.clear.cgColor
-//        circleLayer.lineWidth = 2.0
-        
-        // 创建x号路径
-        let crossPath = createCrossPath(at: location)
-        // 创建 CAShapeLayer 显示路径
-        let crossrLayer = CAShapeLayer()
-        crossrLayer.path = crossPath.cgPath
-        crossrLayer.strokeColor = UIColor.red.cgColor
-        crossrLayer.fillColor = UIColor.clear.cgColor
-        crossrLayer.lineWidth = 2.0
-        
-//        // 创建星号路径
-//        let starPath = createStarPath(at: location)
-//        // 创建 CAShapeLayer 显示路径
-//        let starLayer = CAShapeLayer()
-//        starLayer.path = starPath.cgPath
-//        starLayer.fillColor = UIColor.red.cgColor
-//        starLayer.lineWidth = 2.0
-        
-        
-        picImage.layer.addSublayer(crossrLayer)
-        // 存储图层信息
-        circles.append(crossrLayer)
-                
-        // 获取双击位置展现
         if gesture.state == .ended {
             let location = gesture.location(in: picImage)
+            let circleLayer = CAShapeLayer()
+            
+            
+            // 是否存在标记
+            if circles.isEmpty{
+                // 创建圆的路径
+                let circlePath = UIBezierPath(arcCenter: location, radius: 15, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
+                // 创建圆的图层
+                circleLayer.path = circlePath.cgPath
+                circleLayer.strokeColor = UIColor.red.cgColor
+                circleLayer.fillColor = UIColor.clear.cgColor
+                circleLayer.lineWidth = 2.0
+                picImage.layer.addSublayer(circleLayer)
+                // 存储图层信息
+                circles.append(circleLayer)
+                
+                createButtonsAroundCircle(center: location, radius: 50.0)
+            }else{
+                // 遍历已存在的圆，判断触摸位置是否在某个圆内
+                var isTouchInsideExistingCircle = false
+                
+                for (index, existingCircleLayer) in circles.enumerated() {
+                    if existingCircleLayer.path?.contains(location) == true {
+                        
+                        circles.append(circles.remove(at: index))
+                        for circle in circles {
+                            picImage.layer.addSublayer(circle)
+                                   }
+                    
+//                        
+//                       // 如果触摸位置在某个已有的圆内，创建按钮
+                        createButtonsAroundCircle(center: location, radius: 50.0)
+                        isTouchInsideExistingCircle = true
+                        break
+                    }
+                }
+                
+                if !isTouchInsideExistingCircle {
+                    // 创建圆的路径
+                    let circlePath = UIBezierPath(arcCenter: location, radius: 15, startAngle: 0, endAngle: CGFloat(Double.pi * 2), clockwise: true)
+                    // 创建圆的图层
+                    circleLayer.path = circlePath.cgPath
+                    circleLayer.strokeColor = UIColor.red.cgColor
+                    circleLayer.fillColor = UIColor.clear.cgColor
+                    circleLayer.lineWidth = 2.0
+                    
+                    // 添加图层
+                    picImage.layer.addSublayer(circleLayer)
+                    // 存储图层信息
+                    circles.append(circleLayer)
+                    
+                    createButtonsAroundCircle(center: location, radius: 50.0)
+                    
+                }
+                
+            }
+            
+    //        // 创建x号路径
+    //        let crossPath = createCrossPath(at: location)
+    //        // 创建 CAShapeLayer 显示路径
+    //        let crossrLayer = CAShapeLayer()
+    //        crossrLayer.path = crossPath.cgPath
+    //        crossrLayer.strokeColor = UIColor.red.cgColor
+    //        crossrLayer.fillColor = UIColor.clear.cgColor
+    //        crossrLayer.lineWidth = 2.0
+            
+    //        // 创建星号路径
+    //        let starPath = createStarPath(at: location)
+    //        // 创建 CAShapeLayer 显示路径
+    //        let starLayer = CAShapeLayer()
+    //        starLayer.path = starPath.cgPath
+    //        starLayer.fillColor = UIColor.red.cgColor
+    //        starLayer.lineWidth = 2.0
+    //
+            
+//            picImage.layer.addSublayer(crossPath)
+//            // 存储图层信息
+//            circles.append(crossPath)
+//
+//            createButtonsAroundCircle(center: location, radius: 50.0)
+            
+            
+            print("Touch 坐标: \(location.x), \(location.y)")
+            // 获取双击位置展现
             // 处理双击位置
             let x: CGFloat = location.x
             let y: CGFloat = location.y
-            textFieldXPoint.text = "\(x)"
-            textFieldYPoint.text = "\(y)"
+            textFieldXPoint.text = "x:\(x)"
+            textFieldYPoint.text = "y:\(y)"
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelTap))
+            // 检测单击
+            tapGesture.numberOfTapsRequired = 2
+            picImage.addGestureRecognizer(tapGesture)
         }
     }
     
@@ -144,12 +198,13 @@ class ViewController: UIViewController {
             if circleLayer.path?.contains(location) == true {
                 circleLayer.removeFromSuperlayer()
                 circles.remove(at: index)
+                
                 break // 如果只想删除一个，可以添加 break
             }
         }
-        
-        
     }
+    
+    
     
     
     // 画星路径函数
@@ -192,4 +247,89 @@ class ViewController: UIViewController {
         crossPath.close()
         return crossPath
     }
+    
+    
+    // 围绕标记生成按钮
+    func createButtonsAroundCircle(center: CGPoint, radius: CGFloat) {
+         let buttonTitles = ["delete", "OK", "Button C", "Button D"]
+         let buttonActions = [#selector(cancelTapped), #selector(oKTapped), #selector(buttonCTapped), #selector(buttonDTapped)]
+
+         for i in 0..<buttonTitles.count {
+             let angle = CGFloat(i) * (CGFloat.pi * 2.0 / CGFloat(buttonTitles.count))
+             let x = center.x + radius * cos(angle)
+             let y = center.y + radius * sin(angle)
+
+             let button = UIButton(type: .system)
+             button.setTitle(buttonTitles[i], for: .normal)
+             button.frame = CGRect(x: x - 50, y: y - 25, width: 100, height: 50)
+             button.addTarget(self, action: buttonActions[i], for: .touchUpInside)
+
+             picImage.bringSubviewToFront(button)
+             picImage.addSubview(button)
+         }
+     }
+    
+    @objc func cancelTapped() {
+        print("delete!")
+        
+        deleteCircles()
+        
+        picImage.subviews.forEach { subview in
+            if subview is UIButton {
+                subview.isHidden = true
+            }
+        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func oKTapped() {
+        print("OK tapped!")
+        
+        picImage.subviews.forEach { subview in
+            if subview is UIButton {
+                subview.isHidden = true
+            }
+        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func buttonCTapped() {
+        print("Button C tapped!")
+        
+        picImage.subviews.forEach { subview in
+            if subview is UIButton {
+                subview.isHidden = true
+            }
+        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
+    }
+
+    @objc func buttonDTapped() {
+        print("Button D tapped!")
+        
+        picImage.subviews.forEach { subview in
+            if subview is UIButton {
+                subview.isHidden = true
+            }
+        }
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        
+        // 检测单击
+        tapGesture.numberOfTapsRequired = 2
+        picImage.addGestureRecognizer(tapGesture)
+    }
+    
+    
 }
